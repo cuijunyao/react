@@ -1,0 +1,11 @@
+{
+  "presets": [
+    [
+      "es2015", // 用于转换 es6 --> es5
+      {
+        "modules": false
+      }
+    ],
+    "react"
+  ]
+}

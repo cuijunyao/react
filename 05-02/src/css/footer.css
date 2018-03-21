@@ -1,0 +1,10 @@
+.miniFooter {
+    background-color: darkgreen;
+    color: #3f3251;
+    padding-top: 3px;
+    padding-bottom: 3px;
+}
+
+.miniFooter h1 {
+    font-size: 12px;
+}
