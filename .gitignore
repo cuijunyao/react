@@ -20,3 +20,4 @@ package-lock.json
 .eslintcache
 
 mock_server/db.json
+.DS_Store
