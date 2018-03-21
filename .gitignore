@@ -21,3 +21,4 @@ package-lock.json
 
 mock_server/db.json
 .DS_Store
+.idea/
