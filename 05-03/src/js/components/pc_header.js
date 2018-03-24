@@ -83,15 +83,19 @@ class PCHeader extends React.Component {
     handleRegister(e) {
         // 页面开始向 API 进行提交数据
         e.preventDefault();
-        let myFetchOptions = {
-            method: 'GET'
-        };
         let formData = this.props.form.getFieldsValue();
-        console.log(formData);
-        // fetch("http://newsapi.gugujiankong.com/Handler.ashx?action=register&username=userName&password=password&r_userName=" + formData.r_userName + "&r_password=" + formData.r_password + "&r_confirmPassword=" + formData.r_confirmPassword, myFetchOptions
-        // ).then(response => response.json()).then(json => {
-        //     this.setState({userNickName: json.NickUserName, userid: json.UserId});
-        // });
+        let payload = {
+            userName: formData.userName,
+            email: formData.email,
+            password: formData.password
+        };
+
+        fetch("http://47.104.86.203:8888/api/v1/user", {
+            method: "POST",
+            body: JSON.stringify(payload)
+        }).then(response => response.json())
+            .then(json => console.log(json.userName));
+
         message.success("注册成功！");
         this.setModalVisible(false);
     };
@@ -99,6 +103,9 @@ class PCHeader extends React.Component {
     handleLogin(e) {
         // 页面开始向 API 进行提交数据
         e.preventDefault();
+        let myFetchOptions = {
+            method: 'Post'
+        };
         this.props.form.validateFields((err, values) => {
             if (!err) {
                 console.log('Received values of form: ', values);
