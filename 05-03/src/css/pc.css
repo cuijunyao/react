@@ -17,3 +17,24 @@
 .footer {
     text-align: center;
 }
+
+.login-form {
+    max-width: 100%;
+}
+
+.login-form-forgot {
+    float: right;
+}
+
+.login-form-button {
+    width: 100%;
+}
+
+.login-tab-pan{
+    padding-top: 0px;
+}
+
+.register-form {
+    max-width: 100%;
+}
+
