@@ -92,6 +92,9 @@ class PCHeader extends React.Component {
 
         fetch("http://47.104.86.203:8888/api/v1/user", {
             method: "POST",
+            headers: {
+                'Content-Type': 'application/json;charset=UTF-8'
+            },
             body: JSON.stringify(payload)
         }).then(response => response.json())
             .then(json => console.log(json.userName));
