@@ -1,4 +1,6 @@
 import React from 'react';
+import {Router, Route, Link, browserHistory} from 'react-router'
+
 import {
     Row,
     Col,
@@ -30,10 +32,26 @@ class PCHeader extends React.Component {
             modalVisible: false, // 默认不显示模态框
             confirmDirty: false,
             autoCompleteResult: [],
-            disabledRegisterButton: true
-
+            disabledRegisterButton: true,
+            action: 'login',
+            userName: '',
+            userid: '',
+            loginStatus: 0,
+            registerStatus: 0
         };
     }
+
+    componentWillMount() {
+        if (localStorage.userid != '') {
+            console.log(localStorage.userid);
+            console.log(localStorage.userName);
+            this.setState({
+                hasLogin: true,
+                userName: localStorage.userName,
+                userid: localStorage.userid
+            });
+        }
+    };
 
     showModal() {
         this.setState({modalVisible: true});
@@ -51,6 +69,14 @@ class PCHeader extends React.Component {
         this.setState({current: e.key});
         if (e.key === "register") {
             this.showModal();
+        } else if (e.key === "logout") {
+            // 清空本地数据
+            localStorage.userid = '';
+            localStorage.userName = '';
+            this.setState({hasLogin: false})
+        } else if (e.key === "user-center") {
+            // 跳转到用户详情页
+            console.log("user-center")
         }
     };
 
@@ -80,58 +106,121 @@ class PCHeader extends React.Component {
         this.setState({confirmDirty: this.state.confirmDirty || !!value});
     }
 
-    handleRegister(e) {
+    handleSubmit(e) {
         // 页面开始向 API 进行提交数据
         e.preventDefault();
         let formData = this.props.form.getFieldsValue();
-        let payload = {
-            userName: formData.userName,
-            email: formData.email,
-            password: formData.password
-        };
-
-        fetch("http://47.104.86.203:8888/api/v1/user", {
-            method: "POST",
-            headers: {
-                'Content-Type': 'application/json;charset=UTF-8'
-            },
-            body: JSON.stringify(payload)
-        }).then(response => response.json())
-            .then(json => console.log(json.userName));
-
-        message.success("注册成功！");
-        this.setModalVisible(false);
-    };
-
-    handleLogin(e) {
-        // 页面开始向 API 进行提交数据
-        e.preventDefault();
-        let myFetchOptions = {
-            method: 'Post'
-        };
-        this.props.form.validateFields((err, values) => {
-            if (!err) {
-                console.log('Received values of form: ', values);
+        if (this.state.action === "login") {
+            if (formData.userName !== '' && formData.password !== '') {
+                fetch("http://47.104.86.203:8888/api/v1/user?userName="
+                    + formData.userName + "&password=" + formData.password, {
+                    method: "GET"
+                }).then(response => {
+                    if (response.status === 200) {
+                        this.setState({loginStatus: 200});
+                        return response.json();
+                    } else if (response.status === 404) {
+                        message.error("该用户还未注册!", 3);
+                    } else if (response.status === 403) {
+                        message.error("密码错误!", 3);
+                    }
+                }).then(json => {
+                    if (this.state.loginStatus === 200) {
+                        localStorage.userid = json.id;
+                        localStorage.userName = json.userName;
+                        this.setState({
+                            hasLogin: true,
+                            userName: json.userName,
+                            userid: json.id
+                        });
+                        message.success("登录成功!", 2);
+                        this.setModalVisible(false);
+                    }
+                });
+            } else {
+                message.error("请输入登录名和密码!", 3);
             }
-        });
-        message.success("登录成功！");
-        this.setModalVisible(false);
-    }
+        } else {
+            const userName = formData.userName;
+            const email = formData.email;
+            const password = formData.password;
+            const confirm = formData.confirm;
+            if (userName !== '' && userName !== undefined &&
+                email != '' && email !== undefined &&
+                password !== '' && password != undefined &&
+                confirm !== '' && confirm !== undefined) {
+                let payload = {
+                    userName: userName,
+                    email: email,
+                    password: password
+                };
+                fetch("http://47.104.86.203:8888/api/v1/user", {
+                    method: "POST",
+                    headers: {
+                        'Content-Type': 'application/json;charset=UTF-8'
+                    },
+                    body: JSON.stringify(payload)
+                }).then(response => {
+                    if (response.status === 200) {
+                        this.setState({registerStatus: 200});
+                        return response.json();
+                    } else if (response.status === 403) {
+                        message.error("该用户已被注册!", 3);
+                    }
+                }).then(json => {
+                    if (this.state.registerStatus === 200) {
+                        localStorage.userid = json.id;
+                        localStorage.userName = json.userName;
+                        this.setState({
+                            hasLogin: true,
+                            userName: json.userName,
+                            userid: json.id
+                        });
+                        message.success("注册成功!");
+                        this.setModalVisible(false);
+                        //TODO 自动跳转到首页
+                    }
+                });
+            }
+            else {
+                message.error("请输入完整的注册信息!", 3);
+            }
+        }
+    };
 
     handleAgreeOnChange(e) {
         const value = e.target.checked;
         this.setState({disabledRegisterButton: !value});
     }
 
+    selectTabCallback(key) { // 先执行 callback 后执行 handleSubmit
+        if (key === "1") {
+            this.setState({action: 'login'});
+        } else if (key === "2") {
+            this.setState({action: 'register'});
+        }
+    };
+
     render() {
         const {getFieldDecorator} = this.props.form; // 从表单中获取数据
         const userShow = this.state.hasLogin
-            // 已经登录应该显示: 个人中心/退出按钮
-            ? <Menu.Item key="logout" className="register">
-            </Menu.Item>
+            // 已经登录应该显示: 个人中心 退出按钮 昵称
+            ?
+            <SubMenu key="submenu" title={<span> <Icon type="user" style={{
+                fontSize: 21,
+                color: '#08c'
+            }}/> {this.state.userName}</span>}>
+                <Menu.Item key="user-center">
+                    <Icon type="setting" style={{fontSize: 17, color: '#08c'}}/>个人中心
+                </Menu.Item>
+                <Menu.Item key="logout">
+                    <Icon type="logout" style={{fontSize: 17, color: '#08c'}}/>退出
+                </Menu.Item>
+            </SubMenu>
+
             // 未登录应该显示: 登录/注册按钮
             : <Menu.Item key="register" className='register'>
-                <Icon type="login"/><strong>登录/注册</strong> {/*图标加文字*/}
+                <Icon type="login" style={{fontSize: 17, color: '#08c'}}/><strong>登录/注册</strong>
             </Menu.Item>;
 
         const formItemLayout = {
@@ -158,7 +247,7 @@ class PCHeader extends React.Component {
             <header>
                 <Row>
                     <Col span={2}></Col> {/*左边留 2 格空白*/}
-                    <Col span={2}>
+                    <Col span={4}>
                         <a href="/" className="logo"> {/* a 标签下的内容均可点击， className 为 img span ... 做样式限制 */}
                             <img src="../../images/logo.png" alt="logo"/>
                             <span>News</span>
@@ -185,17 +274,14 @@ class PCHeader extends React.Component {
                             <Menu.Item key="tiyu">
                                 <Icon type="appstore"/>体育
                             </Menu.Item>
-
-                            <Menu.Item/>
-                            <Menu.Item/>
-                            <Menu.Item/>
-                            <Menu.Item/>
-                            <Menu.Item/>
-                            <Menu.Item/>
-                            <Menu.Item/>
-                            <Menu.Item/>
-                            <Menu.Item/>
-                            <Menu.Item/>
+                            <Menu.Item key="s1">
+                            </Menu.Item>
+                            <Menu.Item key="s2">
+                            </Menu.Item>
+                            <Menu.Item key="s3">
+                            </Menu.Item>
+                            <Menu.Item key="s4">
+                            </Menu.Item>
                             {userShow}
 
                             {/* 模态框，默认是隐藏的， 弹出时垂直居中屏幕*/}
@@ -205,9 +291,9 @@ class PCHeader extends React.Component {
                                    onOk={this.handleOk.bind(this)}
                                    okText="close"
                             >
-                                <Tabs defaultActiveKey="1" type="line">
+                                <Tabs defaultActiveKey="1" type="line" onChange={this.selectTabCallback.bind(this)}>
                                     <TabPane tab="登录" key="1" className="login-tab-pan">
-                                        <Form onSubmit={this.handleLogin.bind(this)} className="login-form">
+                                        <Form onSubmit={this.handleSubmit.bind(this)} className="login-form">
                                             <FormItem>
                                                 {getFieldDecorator('userName', {
                                                     rules: [{required: true, message: 'Please input your username!'}],
@@ -243,7 +329,7 @@ class PCHeader extends React.Component {
                                     </TabPane>
 
                                     <TabPane tab="注册" key="2">
-                                        <Form onSubmit={this.handleRegister.bind(this)} className="register-form">
+                                        <Form onSubmit={this.handleSubmit.bind(this)} className="register-form">
                                             <FormItem   {...formItemLayout}
                                                         label={(
                                                             <span>Nickname&nbsp;
@@ -298,8 +384,8 @@ class PCHeader extends React.Component {
                                                     valuePropName: 'checked',
                                                     initialValue: false,
                                                 })(
-                                                    <Checkbox onChange={this.handleAgreeOnChange.bind(this)}>I have read
-                                                        the <a href="">agreement</a></Checkbox>
+                                                    <Checkbox onChange={this.handleAgreeOnChange.bind(this)}>
+                                                        I have read the <a href="">agreement</a></Checkbox>
                                                 )}
                                             </FormItem>
                                             <Button type="primary" htmlType="submit" className="login-form-button"
