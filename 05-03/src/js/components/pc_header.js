@@ -146,8 +146,8 @@ class PCHeader extends React.Component {
             const password = formData.password;
             const confirm = formData.confirm;
             if (userName !== '' && userName !== undefined &&
-                email != '' && email !== undefined &&
-                password !== '' && password != undefined &&
+                email !== '' && email !== undefined &&
+                password !== '' && password !== undefined &&
                 confirm !== '' && confirm !== undefined) {
                 let payload = {
                     userName: userName,
@@ -259,10 +259,10 @@ class PCHeader extends React.Component {
                             <Menu.Item key="top"> {/* key 用来标识是哪一个 Menu Item */}
                                 <Icon type="appstore"/>首页 {/* type 用来标识是当前 Menu Item 的样式类型*/}
                             </Menu.Item>
-                            <Menu.Item key="shehui" disabled={true}>
+                            <Menu.Item key="shehui">
                                 <Icon type="appstore"/>社会
                             </Menu.Item>
-                            <Menu.Item key="guonei" disabled={true}>
+                            <Menu.Item key="guonei">
                                 <Icon type="appstore"/>国内
                             </Menu.Item>
                             <Menu.Item key="guoji">
