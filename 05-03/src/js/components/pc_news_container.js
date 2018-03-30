@@ -21,24 +21,13 @@ export default class PCNewsContainer extends React.Component {
                     <Col span={2}></Col>
                     <Col span={20} className="container">
                         <div className="leftContainer">
-                            <div className="carousel">
                                 <Carousel {...settings}>
-                                    <div className="pic-div">
-                                        <img src="../../images/1.jpg"/>
-                                    </div>
-                                    <div className="pic-div">
-                                        <img src="../../images/2.jpg"/>
-                                    </div>
-                                    <div className="pic-div">
-                                        <img src="../../images/3.jpg"/>
-                                    </div>
-                                    <div className="pic-div">
-                                        <img src="../../images/4.jpg"/>
-                                    </div>
+                                    <div className="pic-div"><img src="../../images/1.jpg"/></div>
+                                    <div className="pic-div"><img src="../../images/2.jpg"/></div>
+                                    <div className="pic-div"><img src="../../images/3.jpg"/></div>
+                                    <div className="pic-div"><img src="../../images/4.jpg"/></div>
                                 </Carousel>
-                                <PCNewsImageBlock count={6} type="wangyi_hot" width="300px" cardTitle="网易热门"
-                                                  imageWidth="115px"/>
-                            </div>
+                                <PCNewsImageBlock count={4} type="wangyi_hot" width="300px" cardTitle="网易热门" imageWidth="115px"/>
                         </div>
                         <Tabs className="tabs_news">
                             <TabPane tab="知乎热门" key="1">

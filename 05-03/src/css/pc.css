@@ -74,14 +74,24 @@
 }
 
 .tabs_news {
-    padding-left: 10px;
+    padding-left: 0px;
     width: 460px;
     float: left;
 }
 
-.topNewsList a {
+/* .topNewsList a {
     line-height: 22px !important;
     color: #4c9aea; !important;
+} */
+.detail-container {
+  padding-top: 10px;
 }
 
+.detail-news-block {
+  float: right;
+}
 
+.articleContainer {
+  padding-top: 300px;
+  padding-left: 200px
+}
