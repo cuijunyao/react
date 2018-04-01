@@ -211,7 +211,7 @@ class PCHeader extends React.Component {
                 color: '#08c'
             }}/> {this.state.userName}</span>}>
                 <Menu.Item key="user-center">
-                    <Icon type="setting" style={{fontSize: 17, color: '#08c'}}/>个人中心
+                    <Link target="_blank" to={`/usercenter`}>个人中心</Link>
                 </Menu.Item>
                 <Menu.Item key="logout">
                     <Icon type="logout" style={{fontSize: 17, color: '#08c'}}/>退出

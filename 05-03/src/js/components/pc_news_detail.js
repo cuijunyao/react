@@ -39,11 +39,8 @@ export default class PCNewsDetails extends React.Component {
               <div className="articleContainer" dangerouslySetInnerHTML={this.createMarkup()}></div>
               <br></br>
               <br></br>
-
               <br></br>
-
               <br></br>
-
               <br></br>
               <br></br>
 
