@@ -211,7 +211,7 @@ class PCHeader extends React.Component {
                 color: '#08c'
             }}/> {this.state.userName}</span>}>
                 <Menu.Item key="user-center">
-                    <Link target="_blank" to={`/usercenter`}>个人中心</Link>
+                    <Link to={`/usercenter`}>个人中心</Link>
                 </Menu.Item>
                 <Menu.Item key="logout">
                     <Icon type="logout" style={{fontSize: 17, color: '#08c'}}/>退出
@@ -253,11 +253,11 @@ class PCHeader extends React.Component {
                             <span>News</span>
                         </a>
                     </Col>
-                    <Col span={16}> {/* 24 栅格中要占据的格子数目，也即空间大小 */}
+                    <Col span={17}> {/* 24 栅格中要占据的格子数目，也即空间大小 */}
                         <Menu mode="horizontal" selectedKeys={[this.state.current]}
                               onClick={this.handleClick.bind(this)} theme="light">
                             <Menu.Item key="top"> {/* key 用来标识是哪一个 Menu Item */}
-                                <Icon type="appstore"/>首页 {/* type 用来标识是当前 Menu Item 的样式类型*/}
+                              <a href="#"> <Icon type="appstore"/>首页</a>{/* type 用来标识是当前 Menu Item 的样式类型*/}
                             </Menu.Item>
                             <Menu.Item key="shehui">
                                 <Icon type="appstore"/>社会
